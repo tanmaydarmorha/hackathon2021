@@ -1,11 +1,11 @@
 package com.hackySprinters.argardening;
 
-import android.content.DialogInterface;
 import android.media.Image;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -14,7 +14,6 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.ar.core.Anchor;
@@ -608,26 +607,7 @@ public class GardenActivity extends AppCompatActivity implements SampleRender.Re
      * depth-based occlusion. The result of this dialog can be retrieved with useDepthForOcclusion().
      */
     private void showOcclusionDialogIfNeeded() {
-        boolean isDepthSupported = session.isDepthModeSupported(Config.DepthMode.AUTOMATIC);
-        if (!depthSettings.shouldShowDepthEnableDialog() || !isDepthSupported) {
-            return; // Don't need to show dialog.
-        }
-
-        // Asks the user whether they want to use depth-based occlusion.
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.options_title_with_depth)
-                .setMessage(R.string.depth_use_explanation)
-                .setPositiveButton(
-                        R.string.button_text_enable_depth,
-                        (DialogInterface dialog, int which) -> {
-                            depthSettings.setUseDepthForOcclusion(true);
-                        })
-                .setNegativeButton(
-                        R.string.button_text_disable_depth,
-                        (DialogInterface dialog, int which) -> {
-                            depthSettings.setUseDepthForOcclusion(false);
-                        })
-                .show();
+        depthSettings.setUseDepthForOcclusion(false);
     }
 
     /**
