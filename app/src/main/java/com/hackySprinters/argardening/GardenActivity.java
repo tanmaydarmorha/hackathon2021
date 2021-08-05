@@ -376,7 +376,7 @@ public class GardenActivity extends AppCompatActivity implements SampleRender.Re
                             "models/texture_brown.png",
                             Texture.WrapMode.CLAMP_TO_EDGE,
                             Texture.ColorFormat.LINEAR);
-            virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj");
+            virtualObjectMesh = Mesh.createFromAsset(render, "models/flower_pot.obj");
             virtualObjectShader =
                     Shader.createFromAssets(
                             render,
@@ -588,7 +588,7 @@ public class GardenActivity extends AppCompatActivity implements SampleRender.Re
                         || (trackable instanceof DepthPoint)) {
                     // Cap the number of objects created. This avoids overloading both the
                     // rendering system and ARCore.
-                    if (anchors.size() >= 20) {
+                    if (anchors.size() >= 5) {
                         anchors.get(0).detach();
                         anchors.remove(0);
                     }
