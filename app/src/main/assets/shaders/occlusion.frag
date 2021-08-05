@@ -1,3 +1,4 @@
+#version 300 es
 precision mediump float;
 
 // The virtual scene as rendered to a texture via a framebuffer. This will be

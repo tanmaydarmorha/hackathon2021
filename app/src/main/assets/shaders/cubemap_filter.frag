@@ -1,3 +1,4 @@
+#version 300 es
 precision mediump float;
 
 // The number of mipmap levels in the cubemap is equal to the number of

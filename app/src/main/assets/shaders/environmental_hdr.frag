@@ -1,3 +1,4 @@
+#version 300 es
 precision mediump float;
 
 // This shader will light scenes based on ARCore's Environmental HDR mode with a

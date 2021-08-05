@@ -1,3 +1,5 @@
+#version 300 es
+
 uniform mat4 u_Model;
 uniform mat4 u_ModelViewProjection;
 uniform mat2 u_PlaneUvMatrix;

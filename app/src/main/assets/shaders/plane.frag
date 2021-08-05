@@ -1,3 +1,5 @@
+#version 300 es
+
 precision highp float;
 uniform sampler2D u_Texture;
 uniform vec4 u_GridControl;  // dotThreshold, lineThreshold, lineFadeShrink,

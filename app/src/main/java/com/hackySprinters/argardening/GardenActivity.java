@@ -1,7 +1,6 @@
 package com.hackySprinters.argardening;
 
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.media.Image;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
@@ -71,7 +70,6 @@ public class GardenActivity extends AppCompatActivity implements SampleRender.Re
     private static final String TAG = GardenActivity.class.getName();
     private static final String SEARCHING_PLANE_MESSAGE = "Searching for surfaces...";
     private static final String WAITING_FOR_TAP_MESSAGE = "Tap on a surface to place an object.";
-
     // See the definition of updateSphericalHarmonicsCoefficients for an explanation of these
     // constants.
     private static final float[] sphericalHarmonicFactors = {
@@ -85,10 +83,8 @@ public class GardenActivity extends AppCompatActivity implements SampleRender.Re
             -0.273137f,
             0.136569f,
     };
-
     private static final float Z_NEAR = 0.1f;
     private static final float Z_FAR = 100f;
-
     private static final int CUBEMAP_RESOLUTION = 16;
     private static final int CUBEMAP_NUMBER_OF_IMPORTANCE_SAMPLES = 32;
     // Assumed distance from the device camera to the surface on which user will try to place objects.
@@ -114,6 +110,7 @@ public class GardenActivity extends AppCompatActivity implements SampleRender.Re
     private final float[] viewInverseMatrix = new float[16];
     private final float[] worldLightDirection = {0.0f, 0.0f, 0.0f, 0.0f};
     private final float[] viewLightDirection = new float[4]; // view x world light direction
+    private String textureFile = "models/texture_brown.png";
     // Rendering. The Renderers are created here, and initialized when the GL surface is created.
     private GLSurfaceView surfaceView;
     private boolean installRequested;
@@ -176,11 +173,8 @@ public class GardenActivity extends AppCompatActivity implements SampleRender.Re
      * Menu button to launch feature specific settings.
      */
     protected boolean settingsMenuClick(MenuItem item) {
-        if (item.getItemId() == R.id.depth_settings) {
-            launchDepthSettingsMenuDialog();
-            return true;
-        } else if (item.getItemId() == R.id.instant_placement_settings) {
-            launchInstantPlacementSettingsMenuDialog();
+        if (item.getItemId() == R.id.change_pot_color_settings) {
+            launchChangeColorSettings();
             return true;
         }
         return false;
@@ -367,13 +361,13 @@ public class GardenActivity extends AppCompatActivity implements SampleRender.Re
             Texture virtualObjectAlbedoTexture =
                     Texture.createFromAsset(
                             render,
-                            "models/texture_grey.png",
+                            textureFile,
                             Texture.WrapMode.CLAMP_TO_EDGE,
                             Texture.ColorFormat.SRGB);
             Texture virtualObjectPbrTexture =
                     Texture.createFromAsset(
                             render,
-                            "models/texture_brown.png",
+                            textureFile,
                             Texture.WrapMode.CLAMP_TO_EDGE,
                             Texture.ColorFormat.LINEAR);
             virtualObjectMesh = Mesh.createFromAsset(render, "models/flower_pot.obj");
@@ -636,74 +630,17 @@ public class GardenActivity extends AppCompatActivity implements SampleRender.Re
                 .show();
     }
 
-    private void launchInstantPlacementSettingsMenuDialog() {
-        resetSettingsMenuDialogCheckboxes();
-        Resources resources = getResources();
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.options_title_instant_placement)
-                .setMultiChoiceItems(
-                        resources.getStringArray(R.array.instant_placement_options_array),
-                        instantPlacementSettingsMenuDialogCheckboxes,
-                        (DialogInterface dialog, int which, boolean isChecked) ->
-                                instantPlacementSettingsMenuDialogCheckboxes[which] = isChecked)
-                .setPositiveButton(
-                        R.string.done,
-                        (DialogInterface dialogInterface, int which) -> applySettingsMenuDialogCheckboxes())
-                .setNegativeButton(
-                        android.R.string.cancel,
-                        (DialogInterface dialog, int which) -> resetSettingsMenuDialogCheckboxes())
-                .show();
-    }
-
     /**
      * Shows checkboxes to the user to facilitate toggling of depth-based effects.
      */
-    private void launchDepthSettingsMenuDialog() {
-        // Retrieves the current settings to show in the checkboxes.
-        resetSettingsMenuDialogCheckboxes();
+    private void launchChangeColorSettings() {
 
-        // Shows the dialog to the user.
-        Resources resources = getResources();
-        if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
-            // With depth support, the user can select visualization options.
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.options_title_with_depth)
-                    .setMultiChoiceItems(
-                            resources.getStringArray(R.array.depth_options_array),
-                            depthSettingsMenuDialogCheckboxes,
-                            (DialogInterface dialog, int which, boolean isChecked) ->
-                                    depthSettingsMenuDialogCheckboxes[which] = isChecked)
-                    .setPositiveButton(
-                            R.string.done,
-                            (DialogInterface dialogInterface, int which) -> applySettingsMenuDialogCheckboxes())
-                    .setNegativeButton(
-                            android.R.string.cancel,
-                            (DialogInterface dialog, int which) -> resetSettingsMenuDialogCheckboxes())
-                    .show();
+        // change the color of pot
+        if (textureFile.contains("brown")) {
+            textureFile = "models/texture_grey.png";
         } else {
-            // Without depth support, no settings are available.
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.options_title_without_depth)
-                    .setPositiveButton(
-                            R.string.done,
-                            (DialogInterface dialogInterface, int which) -> applySettingsMenuDialogCheckboxes())
-                    .show();
+            textureFile = "models/texture_brown.png";
         }
-    }
-
-    private void applySettingsMenuDialogCheckboxes() {
-        depthSettings.setUseDepthForOcclusion(depthSettingsMenuDialogCheckboxes[0]);
-        depthSettings.setDepthColorVisualizationEnabled(depthSettingsMenuDialogCheckboxes[1]);
-        instantPlacementSettings.setInstantPlacementEnabled(
-                instantPlacementSettingsMenuDialogCheckboxes[0]);
-        configureSession();
-    }
-
-    private void resetSettingsMenuDialogCheckboxes() {
-        depthSettingsMenuDialogCheckboxes[0] = depthSettings.useDepthForOcclusion();
-        depthSettingsMenuDialogCheckboxes[1] = depthSettings.depthColorVisualizationEnabled();
-        instantPlacementSettingsMenuDialogCheckboxes[0] =
-                instantPlacementSettings.isInstantPlacementEnabled();
     }
 
     /**

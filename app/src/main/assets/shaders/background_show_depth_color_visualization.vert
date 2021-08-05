@@ -1,3 +1,5 @@
+#version 300 es
+
 // This shader pair shows the depth estimation instead of the camera image as
 // the background. This behavior is mostly only useful as a demonstration of the
 // depth feature.

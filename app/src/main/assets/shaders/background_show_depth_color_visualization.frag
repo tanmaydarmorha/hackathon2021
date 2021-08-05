@@ -1,3 +1,4 @@
+#version 300 es
 precision mediump float;
 
 // This shader pair shows the depth estimation instead of the camera image as
